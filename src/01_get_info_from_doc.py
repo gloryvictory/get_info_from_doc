@@ -7,7 +7,7 @@
 #   Created         : 13th Nov 2020
 #   Last Modified	: 13th Тщм 2020
 #   Version		    : 1.0
-#   PIP             : pip install
+#   PIP             : pip install pywin32 and pip install pypiwin32
 #   RESULT          :
 # Modifications	: 1.1 -
 #               : 1.2 -
@@ -24,11 +24,33 @@ from datetime import datetime
 import csv
 import codecs
 import logging
+import win32com.client
+#from pywin32 import win32com
+#import pywin32
+import codecs
+import os
 
 import cfg
 
 
-def
+def doc2txt(folder_start=''):
+    app = win32com.client.Dispatch('Word.Application')
+    #app = pywin32.client.Dispatch('Word.Application')
+    myDir = folder_start
+    for subdir, dirs, files in os.walk(myDir):
+        for file in files:
+            file_path = subdir + os.path.sep + file
+            if (file[-4:] != '.doc'):
+                continue
+            doc = app.Documents.Open(myDir + '/' + file)
+
+            file = open('/' + file + '.txt', 'w+')
+            ttt = doc.Content.Text
+            file.write(ttt.encode('utf-8'))
+            file.close()
+
+
+
 
 # ---------------- do main --------------------------------
 def main():
@@ -36,7 +58,7 @@ def main():
     print('Starting at :' + str(time1))
 
     dir_input = cfg.folder_in_win
-
+    doc2txt(dir_input)
 
     #do_log_file()
 
