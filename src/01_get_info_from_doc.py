@@ -27,6 +27,8 @@ import logging
 import win32com.client
 #from pywin32 import win32com
 #import pywin32
+import uuid
+
 import codecs
 import os
 
@@ -42,11 +44,13 @@ def doc2txt(folder_start=''):
             file_path = subdir + os.path.sep + file
             if (file[-4:] != '.doc'):
                 continue
-            doc = app.Documents.Open(myDir + '/' + file)
+            doc = app.Documents.Open(file_path)
 
-            file = open('/' + file + '.txt', 'w+')
-            ttt = doc.Content.Text
-            file.write(ttt.encode('utf-8'))
+            file = open('' + str(uuid.uuid4()) + '.txt', 'w+')
+            ttt = str(doc.Content.Text)
+            #file.write(ttt.encode('utf-8'))
+            file.write(ttt)
+
             file.close()
 
 
