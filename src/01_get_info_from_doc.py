@@ -28,13 +28,15 @@ import logging
 import cfg
 
 
+def
 
 # ---------------- do main --------------------------------
 def main():
     time1 = datetime.now()
     print('Starting at :' + str(time1))
 
-    dir_input = get_input_directory()
+    dir_input = cfg.folder_in_win
+
 
     #do_log_file()
 
