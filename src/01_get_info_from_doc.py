@@ -58,7 +58,7 @@ def doc2txt(file_path=''):
     #file.write(ttt.encode('utf-8'))
     file.write(ttt)
     file.close()
-
+    app.Quit()
 
 
 # ---------------- do main --------------------------------
