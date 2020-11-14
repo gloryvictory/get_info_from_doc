@@ -44,6 +44,7 @@ def get_list_files(folder_start='', file_name=''):
             file_to_seek = str(file).lower()
             if file_to_seek == file_name:
                 info_doc.append(file_path)
+                print('Found :' + file_path)
             else:
                 continue
     return info_doc
@@ -70,6 +71,7 @@ def main():
     files_list = get_list_files(dir_input, file_name)
 
     for file in files_list:
+        print('doc2txt :' + file)
         doc2txt(file)
 
 
