@@ -34,6 +34,17 @@ import os
 
 import cfg
 
+def do_log_file(folder_out=''):
+    for handler in logging.root.handlers[:]:  # Remove all handlers associated with the root logger object.
+        logging.root.removeHandler(handler)
+    dir_out = folder_out
+    file_log = str(os.path.join(dir_out, cfg.file_log))  # from cfg.file
+    if os.path.isfile(file_log):     # Если выходной LOG файл существует - удаляем его
+        os.remove(file_log)
+    logging.basicConfig(filename=file_log, format='%(asctime)s %(levelname)s %(message)s', level=logging.DEBUG,
+                        filemode='w')  #
+    logging.info(file_log)
+
 
 def get_list_files(folder_start='', file_name=''):
     info_doc = []
@@ -44,20 +55,25 @@ def get_list_files(folder_start='', file_name=''):
             file_to_seek = str(file).lower()
             if file_to_seek == file_name:
                 info_doc.append(file_path)
-                print('Found :' + file_path)
+                strq = 'Found :' + file_path
+                print(strq)
+                logging.info(strq)
             else:
                 continue
     return info_doc
 
 
-def doc2txt(file_path=''):
+def doc2txt(folder_out='', file_path=''):
+    if len(str(folder_out)) < 3:
+        return
     app = win32com.client.Dispatch('Word.Application')
-    doc = app.Documents.Open(file_path)
-    file = open('' + str(uuid.uuid4()) + '.txt', 'w+')
+    doc = app.Documents.Open(file_path, Visible=False)
+    file = open(folder_out + os.path.sep + str(uuid.uuid4()) + '.txt', 'w+')
     ttt = str(doc.Content.Text)
     #file.write(ttt.encode('utf-8'))
     file.write(ttt)
     file.close()
+    #app.Close()
     app.Quit()
 
 
@@ -67,15 +83,20 @@ def main():
     print('Starting at :' + str(time1))
     files_list  = []
     dir_input = cfg.folder_in_win
+    dir_out = cfg.folder_out_win
     file_name= cfg.file_name
+    do_log_file(dir_out)
+
     files_list = get_list_files(dir_input, file_name)
 
     for file in files_list:
-        print('doc2txt :' + file)
-        doc2txt(file)
+        strq = 'doc2txt :' + file
+        print(strq)
+        logging.info(strq)
+        doc2txt(dir_out, file)
 
 
-    #do_log_file()
+    #
 
     #do_multithreading(dir_input)
 

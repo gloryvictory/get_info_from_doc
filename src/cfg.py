@@ -5,4 +5,6 @@ from time import strftime   # Load just the strftime Module from Time
 file_log = str(strftime("%Y-%m-%d") + "_from_csv" + ".log")
 
 folder_in_win = 'C:\\TEMP\\TEST'
+folder_out_win = 'C:\\TEMP\\OUT'
+
 file_name='info.doc'  #in lower case
