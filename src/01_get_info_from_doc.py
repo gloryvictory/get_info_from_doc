@@ -14,22 +14,21 @@
 #
 # Description   : get some text
 
-import os  # Load the Library Module
 import os.path
-import sys
-import time
-from sys import platform as _platform
-from time import strftime  # Load just the strftime Module from Time
+#import sys
+#import time
+#from sys import platform as _platform
+#from time import strftime  # Load just the strftime Module from Time
 from datetime import datetime
-import csv
-import codecs
+#import csv
+#import codecs
 import logging
 import win32com.client
 #from pywin32 import win32com
 #import pywin32
 import uuid
-
-import codecs
+import hashlib
+#import codecs
 import os
 
 import cfg
@@ -55,7 +54,7 @@ def get_list_files(folder_start='', file_name=''):
             file_to_seek = str(file).lower()
             if file_to_seek == file_name:
                 info_doc.append(file_path)
-                strq = 'Found :' + file_path
+                strq = 'Found: ' + file_path
                 print(strq)
                 logging.info(strq)
             else:
@@ -66,9 +65,11 @@ def get_list_files(folder_start='', file_name=''):
 def doc2txt(folder_out='', file_path=''):
     if len(str(folder_out)) < 3:
         return
+
     app = win32com.client.Dispatch('Word.Application')
     doc = app.Documents.Open(file_path, Visible=False)
-    file = open(folder_out + os.path.sep + str(uuid.uuid4()) + '.txt', 'w+')
+    file_name_out = md5(file_path)  #str(uuid.uuid4())
+    file = open(folder_out + os.path.sep + file_name_out + '.txt', 'w+')
     ttt = str(doc.Content.Text)
     #file.write(ttt.encode('utf-8'))
     file.write(ttt)
@@ -76,6 +77,13 @@ def doc2txt(folder_out='', file_path=''):
     #app.Close()
     app.Quit()
 
+
+def md5(fname):
+    hash_md5 = hashlib.md5()
+    with open(fname, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
 
 # ---------------- do main --------------------------------
 def main():
@@ -90,7 +98,7 @@ def main():
     files_list = get_list_files(dir_input, file_name)
 
     for file in files_list:
-        strq = 'doc2txt :' + file
+        strq = 'doc2txt: ' + file
         print(strq)
         logging.info(strq)
         doc2txt(dir_out, file)
