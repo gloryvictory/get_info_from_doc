@@ -35,24 +35,28 @@ import os
 import cfg
 
 
-def doc2txt(folder_start=''):
-    app = win32com.client.Dispatch('Word.Application')
-    #app = pywin32.client.Dispatch('Word.Application')
+def get_list_files(folder_start='', file_name=''):
+    info_doc = []
     myDir = folder_start
     for subdir, dirs, files in os.walk(myDir):
         for file in files:
             file_path = subdir + os.path.sep + file
-            if (file[-4:] != '.doc'):
+            file_to_seek = str(file).lower()
+            if file_to_seek == file_name:
+                info_doc.append(file_path)
+            else:
                 continue
-            doc = app.Documents.Open(file_path)
+    return info_doc
 
-            file = open('' + str(uuid.uuid4()) + '.txt', 'w+')
-            ttt = str(doc.Content.Text)
-            #file.write(ttt.encode('utf-8'))
-            file.write(ttt)
 
-            file.close()
-
+def doc2txt(file_path=''):
+    app = win32com.client.Dispatch('Word.Application')
+    doc = app.Documents.Open(file_path)
+    file = open('' + str(uuid.uuid4()) + '.txt', 'w+')
+    ttt = str(doc.Content.Text)
+    #file.write(ttt.encode('utf-8'))
+    file.write(ttt)
+    file.close()
 
 
 
@@ -60,9 +64,14 @@ def doc2txt(folder_start=''):
 def main():
     time1 = datetime.now()
     print('Starting at :' + str(time1))
-
+    files_list  = []
     dir_input = cfg.folder_in_win
-    doc2txt(dir_input)
+    file_name= cfg.file_name
+    files_list = get_list_files(dir_input, file_name)
+
+    for file in files_list:
+        doc2txt(file)
+
 
     #do_log_file()
 
