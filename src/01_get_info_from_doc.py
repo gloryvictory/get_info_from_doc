@@ -65,18 +65,27 @@ def get_list_files(folder_start='', file_name=''):
 def doc2txt(folder_out='', file_path=''):
     if len(str(folder_out)) < 3:
         return
-
     app = win32com.client.Dispatch('Word.Application')
-    doc = app.Documents.Open(file_path, Visible=False)
-    file_name_out = md5(file_path)  #str(uuid.uuid4())
-    file = open(folder_out + os.path.sep + file_name_out + '.txt', 'w+')
-    ttt = str(doc.Content.Text)
-    #file.write(ttt.encode('utf-8'))
-    file.write(ttt)
-    file.close()
-    #app.Close()
-    app.Quit()
+    try:
 
+        doc = app.Documents.Open(file_path, Visible=False)
+        file_name_out = md5(file_path)  #str(uuid.uuid4())
+        file = open(folder_out + os.path.sep + file_name_out + '.txt', 'w+')
+        ttt = str(doc.Content.Text)
+        #file.write(ttt.encode('utf-8'))
+        str_to_file = 'File: ' + file_path + '\n'
+        file.write(str_to_file)
+        file.write(ttt)
+        file.close()
+        #app.Close()
+        app.Quit()
+    except Exception as e:
+        strerr = "Exception occurred " + str(e) + ' File: ' + file_path
+
+        print(strerr)  # , exc_info=True
+        logging.error(strerr)
+    finally:
+        app.Quit()
 
 def md5(fname):
     hash_md5 = hashlib.md5()
